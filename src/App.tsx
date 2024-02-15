@@ -42,7 +42,7 @@ function App() {
         zoom={10}
         style={{ height: "calc(100vh - 200px)" }}
       >
-        <Centerer onCenter={setCenter} />
+        <Centerer onCenter={setCenter} onBoundsChange={setRadius} />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -52,49 +52,6 @@ function App() {
       <form onSubmit={onSubmit}>
         <div>
           <strong>Hae tori.fi:sta ympyrän alueelta</strong>
-        </div>
-        <div>
-          Matka korkeintaan:
-          <label>
-            <input
-              type="radio"
-              name="radius"
-              checked={radius === 1_000}
-              value={1_000}
-              onChange={(e) => setRadius(Number(e.target.value))}
-            />
-            1 km
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="radius"
-              checked={radius === 5_000}
-              value={5_000}
-              onChange={(e) => setRadius(Number(e.target.value))}
-            />
-            5 km
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="radius"
-              checked={radius === 10_000}
-              value={10_000}
-              onChange={(e) => setRadius(Number(e.target.value))}
-            />
-            10 km
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="radius"
-              checked={radius === 50_000}
-              value={50_000}
-              onChange={(e) => setRadius(Number(e.target.value))}
-            />
-            50 km
-          </label>
         </div>
         <div>
           Postinumeroalue:
@@ -151,14 +108,34 @@ function App() {
 
 function Centerer({
   onCenter,
+  onBoundsChange,
 }: {
   onCenter?: (center: [number, number]) => void;
+  onBoundsChange?: (minRadiusMeters: number) => void;
 }) {
   const map = useMap();
 
   useMapEvent("move", (e) => {
     const center = map.getCenter();
     onCenter?.([center.lat, center.lng]);
+  });
+
+  useMapEvent("zoomend", (e) => {
+    const bounds = map.getBounds();
+    const minRadiusMeters =
+      (Math.min(
+        distanceBetweenCoordinates(
+          [bounds.getNorth(), bounds.getWest()],
+          [bounds.getNorth(), bounds.getEast()]
+        ),
+        distanceBetweenCoordinates(
+          [bounds.getNorth(), bounds.getWest()],
+          [bounds.getSouth(), bounds.getWest()]
+        )
+      ) /
+        2) *
+      0.8;
+    onBoundsChange?.(minRadiusMeters);
   });
 
   useEffect(() => {
