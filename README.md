@@ -1,4 +1,4 @@
-![Tori.fi karttahaku logo](https://raw.githubusercontent.com/jehna/tori-fi-karttahaku/blob/main/public/logo512.png)
+![Tori.fi karttahaku logo](https://raw.githubusercontent.com/jehna/tori-fi-karttahaku/main/public/logo512.png)
 
 # Tori.fi karttahaku
 > Hae kartan mukaan lähistöllä olevia kohteita tori.fi:sta
