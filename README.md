@@ -1,4 +1,4 @@
-![Tori.fi karttahaku logo](https://raw.githubusercontent.com/jehna/tori-fi-karttahaku/main/public/logo512.png)
+<img alt="Tori.fi karttahaku logo" src="https://raw.githubusercontent.com/jehna/tori-fi-karttahaku/main/public/logo512.png" width=200>
 
 # Tori.fi karttahaku
 > Hae kartan mukaan lähistöllä olevia kohteita tori.fi:sta
@@ -16,6 +16,9 @@ Mene sivustolle:
 https://jehna.github.io/tori-fi-karttahaku/
 
 ja kokeile työkalua!
+
+Katso demovideo Youtubesta:  
+[<img alt="Demovideo" src="https://img.youtube.com/vi/QrdJ1NbSQXU/0.jpg" width=200>](https://www.youtube.com/watch?v=QrdJ1NbSQXU)
 
 ## Devaus
 
