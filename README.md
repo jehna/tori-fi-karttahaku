@@ -32,7 +32,9 @@ npm start
 
 ### Julkaisu
 
-CI julkaisee sivuston automaagisesti
+[CI][ci] julkaisee sivuston automaagisesti
+
+[ci]: https://github.com/jehna/tori-fi-karttahaku/blob/main/.github/workflows/static.yml
 
 ## Ominaisuudet
 
