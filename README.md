@@ -1,46 +1,58 @@
-# Getting Started with Create React App
+![Tori.fi karttahaku logo](https://raw.githubusercontent.com/jehna/tori-fi-karttahaku/blob/main/public/logo512.png)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Tori.fi karttahaku
+> Hae kartan mukaan lähistöllä olevia kohteita tori.fi:sta
 
-## Available Scripts
+Tämä työkalu luo sinulle tori.fi -sivustolle hakutermin, jolla voit hakea
+tietyllä alueella olevia kohteita. Tori.fi:n oma haku antaa hakea vain
+postinumerolla ja kaupungin nimellä, joka ei ole kovin hyvä lähtökohta jos
+esimerkiksi asuu kahden kaupungin rajalla ja fillarimatkan päässä on kymmeniä
+postinumeroalueita.
 
-In the project directory, you can run:
+## Miten tämä toimii?
 
-### `npm start`
+Mene sivustolle:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+____
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+ja kokeile työkalua!
 
-### `npm test`
+## Devaus
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Tämä on perin yksinkertainen Create React APP-pohjainen ja hutaisemalla
+rakennettu palvelu. Teknologia on tylsää ja yksitoikkoista. Se lähtee päälle kun ajaa:
 
-### `npm run build`
+```shell
+npm i
+npm start
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Julkaisu
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+CI julkaisee sivuston automaagisesti
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Ominaisuudet
 
-### `npm run eject`
+Tämän projektin nostot:
+* Karttahaku tori.fi -sivustolle 🎉
+* Käyttää OpenStreetMapsin karttaa
+* Ei seuraa sinua, eikä kerää mitään dataa, en minä sillä mitään tee
+* On täysin ilmainen
+* Toivottavasti joku tori.fi:lta näkee tämän projektin ja kopioi suoraan sinne
+  tori.fi:lle että ei tarvisi tällaisia tehdä
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Haluatko osallistua devaukseen?
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Anna palaa! Forkkaa repo ja pistä pullari tulemaan. Jos löydät bugin tai on
+jotain muuta kehitysideoita niin lisää issue niin jutellaan.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Lisenssi
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Tämä projekti on lisensointu MIT-lisenssillä, joten voit tehdä sillä mitä
+lystäät.
 
-## Learn More
+Huomaathan, että postinumerodata on alun perin Tilastokeskukselta ja suoraan
+[Mikael Ahosen sivustolta][postinumerodata] nykäisty, eli sen lisenssi on
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.fi).
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+[postinumerodata]: https://mikaelahonen.com/fi/data/postinumero-data-suomi/
