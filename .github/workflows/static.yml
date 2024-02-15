@@ -35,6 +35,8 @@ jobs:
         uses: actions/configure-pages@v3
       - run: npm ci
       - run: npm run build
+        env:
+          PUBLIC_URL: "/tori-fi-karttahaku/"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
