@@ -7,7 +7,7 @@ import {
   useMapEvent,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { areas } from "./data";
 import "github-fork-ribbon-css/gh-fork-ribbon.css";
 
@@ -115,12 +115,7 @@ function Centerer({
 }) {
   const map = useMap();
 
-  useMapEvent("move", (e) => {
-    const center = map.getCenter();
-    onCenter?.([center.lat, center.lng]);
-  });
-
-  useMapEvent("zoomend", (e) => {
+  const updateBounds = useCallback(() => {
     const bounds = map.getBounds();
     const minRadiusMeters =
       (Math.min(
@@ -136,6 +131,15 @@ function Centerer({
         2) *
       0.8;
     onBoundsChange?.(minRadiusMeters);
+  }, [map, onBoundsChange]);
+
+  useMapEvent("move", (e) => {
+    const center = map.getCenter();
+    onCenter?.([center.lat, center.lng]);
+  });
+
+  useMapEvent("zoomend", (e) => {
+    updateBounds();
   });
 
   useEffect(() => {
@@ -143,7 +147,8 @@ function Centerer({
       map.setView([position.coords.latitude, position.coords.longitude]);
       onCenter?.([position.coords.latitude, position.coords.longitude]);
     });
-  }, [map, onCenter]);
+    updateBounds();
+  }, [map, onCenter, updateBounds]);
   return null;
 }
 
