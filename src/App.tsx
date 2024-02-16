@@ -25,8 +25,8 @@ function App() {
       const touches = (point: [number, number]) =>
         distanceBetweenCoordinates(center, point) < radius;
       return area === "inside"
-        ? alue.polygon.flat().every(touches)
-        : alue.polygon.flat().some(touches);
+        ? alue.polygon.every((p) => p.every(touches))
+        : alue.polygon.some((p) => p.some(touches));
     });
   }, [center, radius, area]);
 
@@ -61,15 +61,19 @@ function App() {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {selectedAreas.map((a) => (
-          <Polygon key={a.postinumeroalue} positions={a.polygon} />
-        ))}
-        <Circle
-          center={center}
-          radius={radius}
-          fillOpacity={0}
-          dashArray={[10]}
-        />
+        {!error &&
+          selectedAreas.map((a) => (
+            <Polygon key={a.postinumeroalue} positions={a.polygon} />
+          ))}
+        {!error && (
+          <Circle
+            center={center}
+            radius={radius}
+            fillOpacity={0}
+            dashArray={[10]}
+          />
+        )}
+        {error && <Circle center={center} radius={radius} opacity={0.1} />}
       </MapContainer>
       <form onSubmit={onSubmit}>
         <div>
