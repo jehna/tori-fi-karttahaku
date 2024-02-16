@@ -73,10 +73,9 @@ function App() {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {!error &&
-          selectedAreas.map((a) => (
-            <Polygon key={a.postinumeroalue} positions={a.polygon} />
-          ))}
+        {selectedAreas.map((a) => (
+          <Polygon key={a.postinumeroalue} positions={a.polygon} />
+        ))}
         {!error && (
           <Circle
             center={center}
@@ -85,7 +84,15 @@ function App() {
             dashArray={[10]}
           />
         )}
-        {error && <Circle center={center} radius={radius} opacity={0.1} />}
+        {error && (
+          <Circle
+            center={center}
+            radius={radius}
+            fillOpacity={0.05}
+            dashArray={[10]}
+            color="red"
+          />
+        )}
       </MapContainer>
       <form onSubmit={onSubmit}>
         <div>
