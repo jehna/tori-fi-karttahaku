@@ -12,10 +12,11 @@ import { areas } from "./data";
 import "github-fork-ribbon-css/gh-fork-ribbon.css";
 
 const DEFAULT_LOCATION_HELSINKI: [number, number] = [60.16952, 24.93545];
+const MAX_TORI_URL_LENGTH_BEFORE_IT_REDIRECTS_TO_MAIN_PAGE = 764;
 
 function App() {
   const [center, setCenter] = useState(DEFAULT_LOCATION_HELSINKI);
-  const [radius, setRadius] = useState(10_000);
+  const [radius, setRadius] = useState(5_000);
   const [area, setArea] = useState<"inside" | "overlap">("inside");
   const [searchTerms, setSearchTerms] = useState("");
   const selectedAreas = useMemo(() => {
@@ -28,18 +29,30 @@ function App() {
     });
   }, [center, radius, area]);
 
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const destinationUrl = useMemo(() => {
     const postCodes = selectedAreas.map((a) => a.postinumeroalue).join(" OR ");
     const searchQuery = encodeURIComponent(`${searchTerms} ${postCodes}`);
-    document.location.href = `https://www.tori.fi/koko_suomi?q=${searchQuery}&cg=0&w=3`;
-  };
+    return `https://www.tori.fi/koko_suomi?q=${searchQuery}&cg=0&w=3`;
+  }, [searchTerms, selectedAreas]);
+
+  const error =
+    destinationUrl.length > MAX_TORI_URL_LENGTH_BEFORE_IT_REDIRECTS_TO_MAIN_PAGE
+      ? "Liian suuri hakualue, valitsethan pienemmän alueen."
+      : null;
+
+  const onSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      document.location.href = destinationUrl;
+    },
+    [destinationUrl]
+  );
 
   return (
     <div className="App">
       <MapContainer
         center={center}
-        zoom={10}
+        zoom={13}
         style={{ height: "calc(100vh - 200px)" }}
       >
         <Centerer onCenter={setCenter} onBoundsChange={setRadius} />
@@ -86,8 +99,11 @@ function App() {
             />
           </label>
         </div>
+        {error && <div className="error">{error}</div>}
         <div>
-          <button type="submit">Etsi tori.fi:sta!</button>
+          <button type="submit" disabled={error ? true : undefined}>
+            Etsi tori.fi:sta!
+          </button>
         </div>
         <div className="areas">
           <small>
