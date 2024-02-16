@@ -42,7 +42,10 @@ function App() {
   }, [searchTerms, selectedAreas]);
 
   useEffect(() => {
-    updateUrlParams(center, radius);
+    const timeout = setTimeout(() => {
+      updateUrlParams(center, radius);
+    }, 1000);
+    return () => clearTimeout(timeout);
   }, [center, radius]);
 
   const error =
