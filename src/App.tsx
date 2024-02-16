@@ -13,11 +13,16 @@ import { areas } from "./data";
 import "github-fork-ribbon-css/gh-fork-ribbon.css";
 
 const DEFAULT_LOCATION_HELSINKI: [number, number] = [60.17952, 24.93545];
+const DEFAULT_RADIUS_METERS = 5_000;
 const MAX_TORI_URL_LENGTH_BEFORE_IT_REDIRECTS_TO_MAIN_PAGE = 764;
 
 function App() {
-  const [center, setCenter] = useState(DEFAULT_LOCATION_HELSINKI);
-  const [radius, setRadius] = useState(5_000);
+  const [center, setCenter] = useState(
+    locationFromUrl() ?? DEFAULT_LOCATION_HELSINKI
+  );
+  const [radius, setRadius] = useState(
+    radiusFromUrl() ?? DEFAULT_RADIUS_METERS
+  );
   const [area, setArea] = useState<"inside" | "overlap">("inside");
   const [searchTerms, setSearchTerms] = useState("");
   const selectedAreas = useMemo(() => {
@@ -35,6 +40,10 @@ function App() {
     const searchQuery = encodeURIComponent(`${searchTerms} ${postCodes}`);
     return `https://www.tori.fi/koko_suomi?q=${searchQuery}&cg=0&w=3`;
   }, [searchTerms, selectedAreas]);
+
+  useEffect(() => {
+    updateUrlParams(center, radius);
+  }, [center, radius]);
 
   const error =
     destinationUrl.length > MAX_TORI_URL_LENGTH_BEFORE_IT_REDIRECTS_TO_MAIN_PAGE
@@ -135,6 +144,8 @@ function App() {
   );
 }
 
+const urlHasInitialLocation = locationFromUrl() !== null;
+
 function Centerer({
   onCenter,
   onBoundsChange,
@@ -172,11 +183,13 @@ function Centerer({
   });
 
   useEffect(() => {
+    updateBounds();
+
+    if (urlHasInitialLocation) return;
     navigator.geolocation.getCurrentPosition((position) => {
       map.setView([position.coords.latitude, position.coords.longitude]);
       onCenter?.([position.coords.latitude, position.coords.longitude]);
     });
-    updateBounds();
   }, [map, onCenter, updateBounds]);
   return null;
 }
@@ -202,4 +215,25 @@ function distanceBetweenCoordinates(
 
   const d = R * c; // in metres
   return d;
+}
+
+function locationFromUrl(): [number, number] | null {
+  const url = new URL(document.location.href);
+  const lat = url.searchParams.get("lat");
+  const lon = url.searchParams.get("lon");
+  return lat && lon ? [Number(lat), Number(lon)] : null;
+}
+
+function radiusFromUrl() {
+  const url = new URL(document.location.href);
+  const radius = url.searchParams.get("radius");
+  return radius ? Number(radius) : null;
+}
+
+function updateUrlParams(center: [number, number], radius: number) {
+  const url = new URL(document.location.href);
+  url.searchParams.set("lat", center[0].toString());
+  url.searchParams.set("lon", center[1].toString());
+  url.searchParams.set("radius", radius.toString());
+  window.history.replaceState({}, "", url.toString());
 }
