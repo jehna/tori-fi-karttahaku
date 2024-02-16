@@ -244,6 +244,6 @@ function updateUrlParams(center: [number, number], radius: number) {
   const url = new URL(document.location.href);
   url.searchParams.set("lat", center[0].toString());
   url.searchParams.set("lon", center[1].toString());
-  url.searchParams.set("radius", radius.toString());
+  url.searchParams.set("radius", Math.round(radius).toString());
   window.history.replaceState({}, "", url.toString());
 }
