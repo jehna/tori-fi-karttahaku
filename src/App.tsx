@@ -51,6 +51,8 @@ function App() {
   const error =
     destinationUrl.length > MAX_TORI_URL_LENGTH_BEFORE_IT_REDIRECTS_TO_MAIN_PAGE
       ? "Liian suuri hakualue, valitsethan pienemmän alueen."
+      : selectedAreas.length === 0
+      ? "Liian pieni alue, ei yhtään positinumeroaluetta näin pienellä alueella"
       : null;
 
   const onSubmit = useCallback(
@@ -94,6 +96,7 @@ function App() {
           />
         )}
       </MapContainer>
+      {error && <div className="error error-toast">{error}</div>}
       <form onSubmit={onSubmit}>
         <div>
           <strong>Hae tori.fi:sta ympyrän alueelta</strong>
