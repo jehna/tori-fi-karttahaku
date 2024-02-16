@@ -15,16 +15,16 @@ import "github-fork-ribbon-css/gh-fork-ribbon.css";
 const DEFAULT_LOCATION_HELSINKI: [number, number] = [60.17952, 24.93545];
 const DEFAULT_RADIUS_METERS = 5_000;
 const MAX_TORI_URL_LENGTH_BEFORE_IT_REDIRECTS_TO_MAIN_PAGE = 764;
+const DEFAULT_ZOOM = 13;
 
 function App() {
   const [center, setCenter] = useState(
     locationFromUrl() ?? DEFAULT_LOCATION_HELSINKI
   );
-  const [radius, setRadius] = useState(
-    radiusFromUrl() ?? DEFAULT_RADIUS_METERS
-  );
+  const [radius, setRadius] = useState(DEFAULT_RADIUS_METERS);
   const [area, setArea] = useState<"inside" | "overlap">("inside");
   const [searchTerms, setSearchTerms] = useState("");
+  const [zoom, setZoom] = useState(zoomFromUrl() ?? DEFAULT_ZOOM);
   const selectedAreas = useMemo(() => {
     return areas.filter((alue) => {
       const touches = (point: [number, number]) =>
@@ -43,10 +43,10 @@ function App() {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      updateUrlParams(center, radius);
+      updateUrlParams(center, zoom);
     }, 1000);
     return () => clearTimeout(timeout);
-  }, [center, radius]);
+  }, [center, zoom]);
 
   const error =
     destinationUrl.length > MAX_TORI_URL_LENGTH_BEFORE_IT_REDIRECTS_TO_MAIN_PAGE
@@ -67,10 +67,14 @@ function App() {
     <div className="App">
       <MapContainer
         center={center}
-        zoom={13}
+        zoom={zoom}
         style={{ height: "calc(100vh - 200px)" }}
       >
-        <Centerer onCenter={setCenter} onBoundsChange={setRadius} />
+        <Centerer
+          onCenter={setCenter}
+          onBoundsChange={setRadius}
+          onZoomChange={setZoom}
+        />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -162,9 +166,11 @@ const urlHasInitialLocation = locationFromUrl() !== null;
 function Centerer({
   onCenter,
   onBoundsChange,
+  onZoomChange,
 }: {
   onCenter?: (center: [number, number]) => void;
   onBoundsChange?: (minRadiusMeters: number) => void;
+  onZoomChange?: (zoom: number) => void;
 }) {
   const map = useMap();
 
@@ -193,6 +199,7 @@ function Centerer({
 
   useMapEvent("zoomend", (e) => {
     updateBounds();
+    onZoomChange?.(map.getZoom());
   });
 
   useEffect(() => {
@@ -237,16 +244,16 @@ function locationFromUrl(): [number, number] | null {
   return lat && lon ? [Number(lat), Number(lon)] : null;
 }
 
-function radiusFromUrl() {
+function zoomFromUrl() {
   const url = new URL(document.location.href);
-  const radius = url.searchParams.get("radius");
-  return radius ? Number(radius) : null;
+  const zoom = url.searchParams.get("zoom");
+  return zoom ? Number(zoom) : null;
 }
 
-function updateUrlParams(center: [number, number], radius: number) {
+function updateUrlParams(center: [number, number], zoom: number) {
   const url = new URL(document.location.href);
   url.searchParams.set("lat", center[0].toString());
   url.searchParams.set("lon", center[1].toString());
-  url.searchParams.set("radius", Math.round(radius).toString());
+  url.searchParams.set("zoom", zoom.toString());
   window.history.replaceState({}, "", url.toString());
 }
