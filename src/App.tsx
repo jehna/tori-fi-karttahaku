@@ -2,6 +2,7 @@ import "./App.css";
 import {
   Circle,
   MapContainer,
+  Polygon,
   TileLayer,
   useMap,
   useMapEvent,
@@ -11,7 +12,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { areas } from "./data";
 import "github-fork-ribbon-css/gh-fork-ribbon.css";
 
-const DEFAULT_LOCATION_HELSINKI: [number, number] = [60.16952, 24.93545];
+const DEFAULT_LOCATION_HELSINKI: [number, number] = [60.17952, 24.93545];
 const MAX_TORI_URL_LENGTH_BEFORE_IT_REDIRECTS_TO_MAIN_PAGE = 764;
 
 function App() {
@@ -24,8 +25,8 @@ function App() {
       const touches = (point: [number, number]) =>
         distanceBetweenCoordinates(center, point) < radius;
       return area === "inside"
-        ? alue.polygon.every(touches)
-        : alue.polygon.some(touches);
+        ? alue.polygon.flat().every(touches)
+        : alue.polygon.flat().some(touches);
     });
   }, [center, radius, area]);
 
@@ -60,7 +61,15 @@ function App() {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Circle center={center} radius={radius} />
+        {selectedAreas.map((a) => (
+          <Polygon key={a.postinumeroalue} positions={a.polygon} />
+        ))}
+        <Circle
+          center={center}
+          radius={radius}
+          fillOpacity={0}
+          dashArray={[10]}
+        />
       </MapContainer>
       <form onSubmit={onSubmit}>
         <div>
