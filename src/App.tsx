@@ -36,6 +36,14 @@ function App() {
   }, [center, radius, area]);
 
   const destinationUrl = useMemo(() => {
+    const searchQuery = selectedAreas
+      .map((a) => (searchTerms ? searchTerms + " " : "") + a.postinumeroalue)
+      .join(" OR ");
+    const encoded = encodeURIComponent(searchQuery);
+    return `https://www.tori.fi/koko_suomi?q=${encoded}&cg=0&w=3`;
+  }, [searchTerms, selectedAreas]);
+
+  const destinationUrlWihtoutSearchTerm = useMemo(() => {
     const postCodes = selectedAreas.map((a) => a.postinumeroalue).join(" OR ");
     const searchQuery = encodeURIComponent(`${searchTerms} ${postCodes}`);
     return `https://www.tori.fi/koko_suomi?q=${searchQuery}&cg=0&w=3`;
@@ -48,12 +56,26 @@ function App() {
     return () => clearTimeout(timeout);
   }, [center, zoom]);
 
-  const error =
-    destinationUrl.length > MAX_TORI_URL_LENGTH_BEFORE_IT_REDIRECTS_TO_MAIN_PAGE
-      ? "Liian suuri hakualue, valitsethan pienemmän alueen."
-      : selectedAreas.length === 0
-      ? "Liian pieni alue, ei yhtään positinumeroaluetta näin pienellä alueella"
-      : null;
+  const error = useMemo(() => {
+    if (
+      destinationUrl.length >
+        MAX_TORI_URL_LENGTH_BEFORE_IT_REDIRECTS_TO_MAIN_PAGE &&
+      destinationUrlWihtoutSearchTerm.length <
+        MAX_TORI_URL_LENGTH_BEFORE_IT_REDIRECTS_TO_MAIN_PAGE
+    )
+      return "Tori-hausta tulee liian pitkä hakusanojen kanssa. Lyhennäthän hakusanoja tai valitsethan pienemmän alueen.";
+
+    if (
+      destinationUrl.length >
+      MAX_TORI_URL_LENGTH_BEFORE_IT_REDIRECTS_TO_MAIN_PAGE
+    )
+      return "Liian suuri hakualue, valitsethan pienemmän alueen.";
+
+    if (selectedAreas.length === 0)
+      return "Liian pieni alue, ei yhtään positinumeroaluetta näin pienellä alueella";
+
+    return null;
+  }, [destinationUrl, destinationUrlWihtoutSearchTerm, selectedAreas]);
 
   const onSubmit = useCallback(
     (e: React.FormEvent) => {
