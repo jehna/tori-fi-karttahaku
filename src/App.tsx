@@ -69,6 +69,8 @@ function App() {
         center={center}
         zoom={zoom}
         style={{ height: "calc(100vh - 200px)" }}
+        zoomSnap={0.01}
+        zoomAnimation={false}
       >
         <Centerer
           onCenter={setCenter}
