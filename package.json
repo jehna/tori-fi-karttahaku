@@ -10,7 +10,7 @@
     "@types/jest": "^29.5.12",
     "@types/leaflet": "^1.9.11",
     "@types/node": "^20.12.7",
-    "@types/react": "^18.2.77",
+    "@types/react": "^18.2.78",
     "@types/react-dom": "^18.2.25",
     "github-fork-ribbon-css": "^0.2.3",
     "leaflet": "^1.9.4",
