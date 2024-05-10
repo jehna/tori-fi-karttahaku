@@ -47,6 +47,6 @@
     ]
   },
   "devDependencies": {
-    "tsx": "^4.9.3"
+    "tsx": "^4.9.4"
   }
 }
